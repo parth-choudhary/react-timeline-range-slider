@@ -116,6 +116,10 @@ class TimeRange extends React.Component {
       showNow,
       formatTick,
       mode,
+      children,
+      showImages,
+      imageCount,
+      videoDuration
     } = this.props
 
     const domain = timelineInterval.map(t => Number(t))
@@ -133,10 +137,27 @@ class TimeRange extends React.Component {
           values={selectedInterval.map(t => +t)}
           rootStyle={{ position: 'relative', width: '100%' }}
         >
-          <Rail>
+          <Ticks values={this.getDateTicks()}>
+            {({ ticks }) => (
+              <>
+                {ticks.map(tick => (
+                  <Tick
+                    key={tick.id}
+                    tick={tick}
+                    count={ticks.length}
+                    format={formatTick}
+                  />
+                ))}
+              </>
+            )}
+          </Ticks>
+
+          {children}
+
+          {showImages && <Rail>
             {({ getRailProps }) =>
-              <SliderRail className={sliderRailClassName} getRailProps={getRailProps} />}
-          </Rail>
+              <SliderRail videoDuration={videoDuration} imageCount={imageCount} className={sliderRailClassName} getRailProps={getRailProps} />}
+          </Rail>}
 
           <Handles>
             {({ handles, getHandleProps }) => (
@@ -201,20 +222,7 @@ class TimeRange extends React.Component {
             </Tracks>
           )}
 
-          <Ticks values={this.getDateTicks()}>
-            {({ ticks }) => (
-              <>
-                {ticks.map(tick => (
-                  <Tick
-                    key={tick.id}
-                    tick={tick}
-                    count={ticks.length}
-                    format={formatTick}
-                  />
-                ))}
-              </>
-            )}
-          </Ticks>
+
         </Slider>
       </div>
     )
